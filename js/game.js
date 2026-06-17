@@ -22,7 +22,8 @@ const session = {
   race: 'random', // the chosen race token for this game
   puzzle: null,
   guesses: [],   // array of guessParts arrays
-  input: [],     // letters for current row's editable tiles
+  cells: [],     // fixed-length: typed letter ('' = empty) per editable tile
+  cursor: 0,     // index of the selected editable tile
   keyState: {},
   status: 'playing',
 };
@@ -41,15 +42,29 @@ function rebuildKeyState() {
 
 function render(flipRow = -1) {
   const activeRow = session.status === 'playing' ? session.guesses.length : -1;
-  renderGrid(session.puzzle, session.guesses, session.input, activeRow, flipRow);
+  renderGrid(session.puzzle, session.guesses, session.cells, session.cursor, activeRow, flipRow, setCursor);
   renderKeyboard(session.keyState, onKey);
+}
+
+function setCursor(i) {
+  session.cursor = i;
+  render();
+}
+
+// Next empty cell after `from` (wrapping); returns cells.length when all filled.
+function nextEmptyCell(from) {
+  const n = session.cells.length;
+  for (let i = from + 1; i < n; i++) if (session.cells[i] === '') return i;
+  for (let i = 0; i <= from && i < n; i++) if (session.cells[i] === '') return i;
+  return n;
 }
 
 function startMode(mode) {
   session.mode = mode;
   session.race = selectedRace;
   session.puzzle = buildPuzzle(seedFor(mode, selectedRace), mode, selectedRace);
-  session.input = [];
+  session.cells = new Array(editableTiles(session.puzzle).length).fill('');
+  session.cursor = 0;
 
   const saved = loadState(mode, selectedRace);
   if (saved) {
@@ -72,21 +87,28 @@ function startMode(mode) {
 
 function onKey(key) {
   if (session.status !== 'playing') return;
-  const total = editableTiles(session.puzzle).length;
+  const n = session.cells.length;
 
   if (key === 'ENTER') {
-    if (session.input.length < total) {
+    if (session.cells.some((c) => c === '')) {
       setMessage('Key in the whole name lah');
       return;
     }
     submitGuess();
   } else if (key === 'BACK') {
-    session.input.pop();
+    if (session.cursor < n && session.cells[session.cursor] !== '') {
+      session.cells[session.cursor] = '';
+    } else {
+      const i = Math.max(0, session.cursor - 1);
+      session.cells[i] = '';
+      session.cursor = i;
+    }
     setMessage('');
     render();
   } else if (/^[A-Z]$/.test(key)) {
-    if (session.input.length < total) {
-      session.input.push(key);
+    if (session.cursor < n) {
+      session.cells[session.cursor] = key;
+      session.cursor = nextEmptyCell(session.cursor);
       setMessage('');
       render();
     }
@@ -94,11 +116,13 @@ function onKey(key) {
 }
 
 function submitGuess() {
-  const guessParts = inputToGuessParts(session.puzzle, session.input);
+  const n = session.cells.length;
+  const guessParts = inputToGuessParts(session.puzzle, session.cells);
   const scored = scoreGuess(guessParts, session.puzzle.parts);
   updateKeyStates(session.keyState, guessParts, scored);
   session.guesses.push(guessParts);
-  session.input = [];
+  session.cells = new Array(n).fill('');
+  session.cursor = 0;
   const flipRow = session.guesses.length - 1;
 
   if (isWin(scored)) {

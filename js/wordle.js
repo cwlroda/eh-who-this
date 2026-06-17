@@ -64,6 +64,7 @@ export function updateKeyStates(map, guessParts, scored) {
     if (s.token) return;
     const g = guessParts[i];
     s.states.forEach((state, j) => {
+      if (j === 0) return; // index 0 is the revealed anchor, not a guess result
       const letter = g[j];
       if (!(letter in map) || RANK[state] > RANK[map[letter]]) {
         map[letter] = state;
