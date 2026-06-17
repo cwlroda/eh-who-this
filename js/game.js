@@ -180,9 +180,16 @@ function init() {
   document.querySelectorAll('.btn-home').forEach((b) =>
     b.addEventListener('click', () => showScreen('landing')));
 
-  // "Choose your bro" race selector (compact dropdown).
-  const racePick = document.getElementById('race-pick');
-  if (racePick) racePick.addEventListener('change', () => { selectedRace = racePick.value; });
+  // "Choose your bro" race selector (segmented control).
+  const segs = document.querySelectorAll('.seg');
+  segs.forEach((s) => s.addEventListener('click', () => {
+    selectedRace = s.dataset.race;
+    segs.forEach((x) => {
+      const on = x === s;
+      x.classList.toggle('selected', on);
+      x.setAttribute('aria-selected', on ? 'true' : 'false');
+    });
+  }));
   document.querySelectorAll('.js-help').forEach((b) =>
     b.addEventListener('click', () => showScreen('help')));
 
