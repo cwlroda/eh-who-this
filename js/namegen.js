@@ -37,10 +37,10 @@ function genNRIC(rng) {
   return `${prefix}XXXX${digits}${suffix}`;
 }
 
-// A plausible everyday transfer amount in SGD.
+// A transfer amount in SGD: 1..500, weighted toward 1..200, random cents.
 function genAmount(rng) {
-  const dollars = randInt(rng, 1, 250);
-  const cents = pick(rng, ['00', '50', '20', '80', '90', '10', '88']);
+  const dollars = rng() < 0.7 ? randInt(rng, 1, 200) : randInt(rng, 201, 500);
+  const cents = String(randInt(rng, 0, 99)).padStart(2, '0');
   return `${dollars}.${cents}`;
 }
 
