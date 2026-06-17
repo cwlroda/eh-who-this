@@ -186,6 +186,13 @@ function showLose() {
   showScreen('lose');
 }
 
+// Return to the finished board to admire it (read-only; input is inert because
+// status is no longer 'playing').
+function admire() {
+  render();
+  showScreen('game');
+}
+
 function bindGlobalKeys() {
   document.addEventListener('keydown', (e) => {
     if (!document.getElementById('screen-game').classList.contains('active')) return;
@@ -216,6 +223,8 @@ function init() {
   }));
   document.querySelectorAll('.js-help').forEach((b) =>
     b.addEventListener('click', () => showScreen('help')));
+  document.querySelectorAll('.btn-admire').forEach((b) =>
+    b.addEventListener('click', admire));
 
   document.getElementById('win-share').addEventListener('click', async () => {
     const text = shareText();

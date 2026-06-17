@@ -1,10 +1,8 @@
 /* Guess grid, tiles, on-screen keyboard, result screens. */
 
-.prompt { text-align: center; font-size: 13px; color: var(--muted); margin: 10px 0 6px; flex: none; }
-
 /* ----- Grid ----- */
 .grid {
-  display: flex; flex-direction: column; gap: 8px;
+  display: flex; flex-direction: column; gap: 8px; margin-top: 10px;
   flex: 1 1 auto; min-height: 0; overflow: hidden;
 }
 /* Past guesses scroll in their own container; current row + dots stay fixed. */
