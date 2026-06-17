@@ -2,7 +2,7 @@
 import { mulberry32, pick, randInt } from './prng.js';
 import { PARTS, STRUCTURES, BANKS } from './data.js';
 
-const RACES = ['chinese', 'malay', 'indian', 'eurasian'];
+export const RACES = ['chinese', 'malay', 'indian', 'eurasian'];
 const ALPHABET = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
 
 // Parts matching race + role + chosen gender (unisex parts always qualify).
@@ -46,12 +46,13 @@ function genAmount(rng) {
 //     parts: [ { text, locked, token } ],   // text uppercased internally for scoring
 //     bank, channel: 'mobile'|'nric', handle, amount
 //   }
-export function buildPuzzle(seed, mode) {
+// `race` is one of RACES, or 'random' to pick a (deterministic) race from the seed.
+export function buildPuzzle(seed, mode, race = 'random') {
   const rng = mulberry32(seed);
 
-  const race = pick(rng, RACES);
+  const chosenRace = race === 'random' ? pick(rng, RACES) : race;
   const gender = rng() < 0.5 ? 'm' : 'f';
-  const candidates = STRUCTURES.filter((s) => s.race === race && s.mode === mode);
+  const candidates = STRUCTURES.filter((s) => s.race === chosenRace && s.mode === mode);
   const structure = pick(rng, candidates);
 
   const parts = [];
@@ -66,8 +67,8 @@ export function buildPuzzle(seed, mode) {
     } else if (slot.kind === 'initial') {
       parts.push({ text: pick(rng, ALPHABET.split('')), locked: true, token: false });
     } else {
-      let candidatesPool = pool(race, slot.role, gender).filter((p) => !usedIds.has(p.id));
-      if (candidatesPool.length === 0) candidatesPool = pool(race, slot.role, gender); // fallback
+      let candidatesPool = pool(chosenRace, slot.role, gender).filter((p) => !usedIds.has(p.id));
+      if (candidatesPool.length === 0) candidatesPool = pool(chosenRace, slot.role, gender); // fallback
       const p = pick(rng, candidatesPool);
       usedIds.add(p.id);
       parts.push({ text: p.text, locked: false, token: false });
@@ -79,7 +80,7 @@ export function buildPuzzle(seed, mode) {
   const handle = channel === 'mobile' ? genMobile(rng) : genNRIC(rng);
   const amount = genAmount(rng);
 
-  return { mode, race, gender, structureId: structure.id, parts, bank, channel, handle, amount };
+  return { mode, race: chosenRace, gender, structureId: structure.id, parts, bank, channel, handle, amount };
 }
 
 // Dev self-check: every structure slot resolves to a non-empty pool for both

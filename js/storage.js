@@ -4,8 +4,8 @@ import { sgtDateString } from './date.js';
 const VERSION = 1;
 const mem = {}; // fallback when localStorage is unavailable (e.g. Safari private)
 
-function key(mode) {
-  return `ehwt:${mode}:state`;
+function key(mode, race) {
+  return `ehwt:${mode}:${race}:state`;
 }
 
 function safeGet(k) {
@@ -28,8 +28,8 @@ function safeSet(k, v) {
 // State shape: { v, date, guesses: string[][], status: 'playing'|'won'|'lost' }
 // guesses[i] is the array of typed remainders... we store full guessed part
 // strings (uppercase) so colours can be recomputed from guesses + answer.
-export function loadState(mode) {
-  const raw = safeGet(key(mode));
+export function loadState(mode, race) {
+  const raw = safeGet(key(mode, race));
   if (!raw) return null;
   let parsed;
   try {
@@ -42,8 +42,8 @@ export function loadState(mode) {
   return parsed;
 }
 
-export function saveState(mode, guesses, status) {
+export function saveState(mode, race, guesses, status) {
   const state = { v: VERSION, date: sgtDateString(), guesses, status };
-  safeSet(key(mode), JSON.stringify(state));
+  safeSet(key(mode, race), JSON.stringify(state));
   return state;
 }

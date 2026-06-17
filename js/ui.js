@@ -87,7 +87,8 @@ export function inputToGuessParts(puzzle, input) {
 //   guesses      array of past guessParts arrays (full uppercase strings per part)
 //   input        array of letters for the active row's editable tiles
 //   activeRow    index of the row currently being typed (or -1 if game over)
-export function renderGrid(puzzle, guesses, input, activeRow) {
+//   flipRow      index of a just-submitted row to animate with a tile flip (-1 = none)
+export function renderGrid(puzzle, guesses, input, activeRow, flipRow = -1) {
   const host = document.getElementById('grid');
   host.innerHTML = '';
   const tiles = editableTiles(puzzle);
@@ -106,6 +107,9 @@ export function renderGrid(puzzle, guesses, input, activeRow) {
     // Per-row scoring for past guesses.
     let scored = null;
     if (past) scored = scoreGuess(guesses[row], puzzle.parts);
+
+    const animate = row === flipRow;
+    let cellIdx = 0; // running tile index across the row, for flip stagger
 
     puzzle.parts.forEach((p, pi) => {
       if (p.token) {
@@ -137,6 +141,11 @@ export function renderGrid(puzzle, guesses, input, activeRow) {
           if (ti > -1 && ti < input.length) tile.textContent = input[ti];
           if (ti === cursor) tile.classList.add('cursor');
         }
+        if (animate) {
+          tile.classList.add('flip');
+          tile.style.animationDelay = `${cellIdx * 0.11}s`;
+        }
+        cellIdx++;
         group.append(tile);
       }
       rowEl.append(group);
