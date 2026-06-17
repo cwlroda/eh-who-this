@@ -1,10 +1,6 @@
 // DOM rendering: screens, PayNow receipt, guess grid, on-screen keyboard.
 import { maskPart, scoreGuess } from './wordle.js';
 
-const RACE_LABEL = {
-  chinese: 'Chinese', malay: 'Malay', indian: 'Indian', eurasian: 'Eurasian',
-};
-
 function el(tag, cls, text) {
   const e = document.createElement(tag);
   if (cls) e.className = cls;
@@ -36,7 +32,6 @@ export function renderReceipt(puzzle) {
 
   const head = el('div', 'receipt-head');
   head.append(el('span', 'receipt-brand', 'PayNow'));
-  head.append(el('span', 'receipt-tag', `${RACE_LABEL[puzzle.race]} name`));
   host.append(head);
 
   const nameRow = el('div', 'receipt-name');
