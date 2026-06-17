@@ -37,9 +37,7 @@ html, body {
   overscroll-behavior: none;
 }
 
-/* Lock the page so nothing scrolls on mobile (no scrollbar, no bounce).
-   Safe-area padding keeps the iPhone notch/home-indicator bands filled with
-   the page background, so the top and bottom of the canvas match the page. */
+/* Lock the page so nothing scrolls on mobile (no scrollbar, no bounce). */
 body {
   position: fixed;
   inset: 0;
@@ -47,8 +45,6 @@ body {
   display: flex;
   justify-content: center;
   background: var(--bg);
-  padding: env(safe-area-inset-top) env(safe-area-inset-right)
-           env(safe-area-inset-bottom) env(safe-area-inset-left);
 }
 
 button, select { touch-action: manipulation; }
@@ -62,7 +58,13 @@ button, select { touch-action: manipulation; }
   overflow: hidden;
 }
 
-.screen { display: none; padding: 16px 18px 20px; height: 100%; overflow: hidden; }
+/* App background is full-bleed (extends under the notch / home indicator) so
+   there's no seam; content is inset from the safe areas via screen padding. */
+.screen {
+  display: none; height: 100%; overflow: hidden;
+  padding: calc(16px + env(safe-area-inset-top)) calc(18px + env(safe-area-inset-right))
+           calc(20px + env(safe-area-inset-bottom)) calc(18px + env(safe-area-inset-left));
+}
 .screen.active { display: flex; flex-direction: column; }
 /* Landing: distribute content evenly so it isn't top-heavy with an empty bottom. */
 #screen-landing.active { justify-content: space-evenly; }
