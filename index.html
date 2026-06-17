@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
   <meta name="theme-color" content="#ffffff" />
-  <title>Eh Who This? — PayNow Name Wordle</title>
+  <title>Eh Who This? · PayNow Name Wordle</title>
   <meta name="description" content="A satirical Singaporean name-guessing Wordle, inspired by PayNow's X-censored names." />
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>💸</text></svg>" />
   <link rel="stylesheet" href="./css/theme.css" />
@@ -25,8 +25,7 @@
       <div class="race-select">
         <span class="race-label">Eh, choose your bro 🤝</span>
         <div class="race-seg" role="tablist" aria-label="Choose race">
-          <button class="seg selected" data-race="random" aria-selected="true">Rojak</button>
-          <button class="seg" data-race="chinese" aria-selected="false">Chinese</button>
+          <button class="seg selected" data-race="chinese" aria-selected="true">Chinese</button>
           <button class="seg" data-race="malay" aria-selected="false">Malay</button>
           <button class="seg" data-race="indian" aria-selected="false">Indian</button>
           <button class="seg" data-race="eurasian" aria-selected="false">Eurasian</button>
@@ -78,11 +77,11 @@
       <h2 class="result-title">Transfer Successful</h2>
       <p class="result-sub">Huat ah! Correct person, money sent. 🧧</p>
       <div class="result-amount" id="win-amount">S$ 0.00</div>
-      <div class="result-name" id="win-name">—</div>
+      <div class="result-name" id="win-name"></div>
       <div class="result-meta">
-        <div><span>Reference</span><b id="win-ref">—</b></div>
-        <div><span>Date &amp; time</span><b id="win-time">—</b></div>
-        <div><span>Solved in</span><b id="win-tries">—</b></div>
+        <div><span>Reference</span><b id="win-ref"></b></div>
+        <div><span>Date &amp; time</span><b id="win-time"></b></div>
+        <div><span>Solved in</span><b id="win-tries"></b></div>
       </div>
       <div class="result-actions">
         <button id="win-share" class="paynow-btn solid">Share result</button>
@@ -96,7 +95,7 @@
       <div class="scam-icon">🚨</div>
       <h2 class="result-title">YOU HAVE BEEN SCAMMED</h2>
       <p class="lose-text">Habis. 6 tries gone, money also fly liao. The fella was actually:</p>
-      <div class="result-name" id="lose-name">—</div>
+      <div class="result-name" id="lose-name"></div>
       <div class="result-actions">
         <button class="paynow-btn ghost-btn btn-admire">See how I kena 😭</button>
         <button class="paynow-btn ghost-btn btn-home">Back home</button>
@@ -113,12 +112,12 @@
 
       <div class="help-body">
         <p class="help-lead">Eh, you really need help meh? 🤔</p>
-        <p>Know how to play Wordle? Then you shouldn't even be here lah — go back and guess.</p>
+        <p>Know how to play Wordle? Then you shouldn't even be here lah. Go back and guess.</p>
         <p>Dunno what Wordle is? Wah, then it's a actual <b>miracle</b> you found this game. 🙏</p>
 
         <p class="help-lead">Okay lah, the rules:</p>
         <ol>
-          <li>Somebody's name kena censored — first letter only, rest all <code>X</code>.</li>
+          <li>Somebody's name kena censored, first letter only, rest all <code>X</code>.</li>
           <li><b>6 tries</b> to guess the whole name. Type lah.</li>
           <li><span class="chip green">Green</span> right spot ·
           <span class="chip yellow">Yellow</span> wrong spot ·

@@ -45,7 +45,7 @@ function genAmount(rng) {
 }
 
 // Build a full puzzle for a given seed + mode. The order of rng draws is the
-// contract that makes puzzles stable across reloads/browsers — never reorder.
+// contract that makes puzzles stable across reloads/browsers; never reorder.
 //
 // Returns:
 //   {
