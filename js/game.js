@@ -11,15 +11,15 @@ import {
 
 const MODE_LABEL = { easy: 'PayNow', hard: 'PayLater' };
 const RACE_LABEL = {
-  chinese: 'Chinese', malay: 'Malay', indian: 'Indian', eurasian: 'Eurasian', random: 'Rojak',
+  chinese: 'Chinese', malay: 'Malay', indian: 'Indian', eurasian: 'Eurasian',
 };
 
-// The race the player picked on the landing ("random" = Rojak / surprise).
-let selectedRace = 'random';
+// The race the player picked on the landing.
+let selectedRace = 'chinese';
 
 const session = {
   mode: null,
-  race: 'random', // the chosen race token for this game
+  race: 'chinese', // the chosen race token for this game
   puzzle: null,
   guesses: [],   // array of guessParts arrays
   cells: [],     // fixed-length: typed letter ('' = empty) per editable tile
