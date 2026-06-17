@@ -5,8 +5,9 @@ PayNow-style censored variant.
 
 In 2026 Singapore's PayNow began masking recipient names with the letter **X** (e.g. `Sean → SEXX`)
 as an anti-scam measure, which famously produced some unfortunate accidental display names and went
-viral. This game leans into that saga: someone PayNow-ed you, all you see is `DXXXX TXX`, and you
-have 6 tries to work out who before you get "scammed".
+viral. This game leans into that saga: you're about to PayNow someone, but the recipient's name
+shows up as `DXXXX TXX` — and you have 6 tries to work out who you're paying before you get
+"scammed".
 
 **Play:** https://cwlroda.github.io/eh-who-this
 
