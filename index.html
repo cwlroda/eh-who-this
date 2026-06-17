@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Eh Who This? — PayNow Name Wordle</title>
+  <meta name="description" content="A satirical Singaporean name-guessing Wordle, inspired by PayNow's X-censored names." />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>💸</text></svg>" />
+  <link rel="stylesheet" href="./css/theme.css" />
+  <link rel="stylesheet" href="./css/game.css" />
+</head>
+<body>
+  <main class="app">
+
+    <!-- ============ LANDING ============ -->
+    <section id="screen-landing" class="screen active">
+      <div class="brand-block">
+        <div class="logo-dot">💸</div>
+        <h1 class="title">Eh Who This?</h1>
+        <p class="subtitle">Someone PayNow-ed you. But their name is half&nbsp;censored.<br />Guess the full Singaporean name before you get scammed.</p>
+      </div>
+
+      <div class="mode-buttons">
+        <button id="btn-easy" class="paynow-btn">
+          <span class="btn-main">PayNow</span>
+          <span class="btn-sub">Easy · first + last name</span>
+        </button>
+        <button id="btn-hard" class="paynow-btn paylater">
+          <span class="btn-main">PayLater</span>
+          <span class="btn-sub">Hard · full traditional name</span>
+        </button>
+      </div>
+
+      <p class="how">One <b>PayNow</b> name and one <b>PayLater</b> name daily. 6 tries each.
+      Refreshes at midnight (SGT). Each name part shows its first letter; the rest are
+      <code>X</code>s, just like the real PayNow saga.</p>
+
+      <p class="disclaimer">
+        ⚠️ Satire. All names are assembled mechanically from common, generic and deliberately
+        stereotypical name parts across Singapore's Chinese, Malay, Indian and Eurasian communities,
+        purely for laughs. Any resemblance to real people is entirely coincidental. Not affiliated
+        with PayNow, ABS, MAS or any bank.
+      </p>
+    </section>
+
+    <!-- ============ GAME ============ -->
+    <section id="screen-game" class="screen">
+      <header class="game-bar">
+        <button class="icon-btn btn-home" aria-label="Back">‹</button>
+        <span class="game-bar-title">Confirm transfer</span>
+        <span class="icon-btn ghost"></span>
+      </header>
+
+      <div id="receipt" class="receipt"></div>
+
+      <p class="prompt">Who is this? Key in the full name.</p>
+      <div id="grid" class="grid"></div>
+      <p id="message" class="message"></p>
+      <div id="keyboard" class="keyboard"></div>
+    </section>
+
+    <!-- ============ WIN ============ -->
+    <section id="screen-win" class="screen result win">
+      <div class="check-wrap"><div class="checkmark"></div></div>
+      <h2 class="result-title">Transfer Successful</h2>
+      <div class="result-amount" id="win-amount">S$ 0.00</div>
+      <div class="result-name" id="win-name">—</div>
+      <div class="result-meta">
+        <div><span>Reference</span><b id="win-ref">—</b></div>
+        <div><span>Date &amp; time</span><b id="win-time">—</b></div>
+        <div><span>Solved in</span><b id="win-tries">—</b></div>
+      </div>
+      <div class="result-actions">
+        <button id="win-share" class="paynow-btn solid">Share result</button>
+        <button class="paynow-btn ghost-btn btn-home">Back home</button>
+      </div>
+    </section>
+
+    <!-- ============ LOSE ============ -->
+    <section id="screen-lose" class="screen result lose">
+      <div class="scam-icon">🚨</div>
+      <h2 class="result-title">YOU HAVE BEEN SCAMMED</h2>
+      <p class="lose-text">You ran out of tries. The money's gone. It was:</p>
+      <div class="result-name" id="lose-name">—</div>
+      <div class="result-actions">
+        <button class="paynow-btn ghost-btn btn-home">Back home</button>
+      </div>
+    </section>
+
+  </main>
+
+  <script type="module" src="./js/game.js"></script>
+</body>
+</html>
