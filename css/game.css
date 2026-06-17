@@ -47,6 +47,11 @@
 .guess-row.past .part-group { gap: 3px; }
 .guess-row.past .token-pill { font-size: 10px; padding: 2px 7px; }
 
+/* Finished/admire board: cells sized to fill the area (set via --fit-sz in JS). */
+.history.fit { justify-content: center; gap: 6px; }
+.history.fit .guess-row.past { gap: 5px 7px; }
+.history.fit .guess-row.past .tile { --sz: var(--fit-sz); border-radius: 6px; }
+
 /* Remaining-attempts indicator. */
 .attempts { display: flex; align-items: center; gap: 6px; margin: 6px 0 2px; }
 .attempts .dot { width: 8px; height: 8px; border-radius: 50%; background: #d9d3e6; }

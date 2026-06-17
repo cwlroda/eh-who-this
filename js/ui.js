@@ -157,7 +157,46 @@ export function renderGrid(puzzle, guesses, cells, cursor, activeRow, flipRow, o
   }
   host.append(currentEl);
 
+  if (!playing && guesses.length) {
+    fitBoard(historyEl, guesses.length);
+  } else {
+    historyEl.classList.remove('fit');
+    historyEl.style.removeProperty('--fit-sz');
+  }
+
   historyEl.scrollTop = historyEl.scrollHeight; // keep the latest guess in view
+}
+
+// On the finished/admire board, size the cells to fill the available area based
+// on the number of rows (guesses) and columns (tiles per row), so it doesn't
+// look empty. Falls back silently if the container isn't laid out yet.
+function fitBoard(historyEl, rows) {
+  const row = historyEl.querySelector('.guess-row');
+  if (!row) return;
+  const availW = historyEl.clientWidth - 8;
+  const availH = historyEl.clientHeight - 8;
+  if (availW < 40 || availH < 40) return; // not laid out yet
+
+  const tiles = row.querySelectorAll('.tile').length;
+  const seps = row.querySelectorAll('.tile-sep').length;
+  const tokens = row.querySelectorAll('.token-pill').length;
+  const parts = row.querySelectorAll('.part-group').length;
+
+  const units = tiles + seps * 0.4 + tokens * 1.8;       // tile-equivalent widths
+  const gapW = (tiles + seps + tokens) * 4 + parts * 4;  // approx inter-tile gaps
+  const rowGap = 8;
+  const sizeW = (availW - gapW) / Math.max(1, units);
+  const sizeH = (availH - rows * rowGap) / rows;
+  let s = Math.max(22, Math.min(56, Math.min(sizeW, sizeH)));
+
+  historyEl.classList.add('fit');
+  historyEl.style.setProperty('--fit-sz', `${s}px`);
+
+  // One correction pass if a row still overflows the width.
+  if (row.scrollWidth > availW) {
+    s = Math.max(18, s * (availW / row.scrollWidth));
+    historyEl.style.setProperty('--fit-sz', `${s}px`);
+  }
 }
 
 const KB_ROWS = ['QWERTYUIOP', 'ASDFGHJKL', 'ZXCVBNM'];

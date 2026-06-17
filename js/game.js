@@ -187,10 +187,11 @@ function showLose() {
 }
 
 // Return to the finished board to admire it (read-only; input is inert because
-// status is no longer 'playing').
+// status is no longer 'playing'). Show the screen first so the grid has a size
+// to measure against when fitting the cells.
 function admire() {
-  render();
   showScreen('game');
+  render();
 }
 
 function bindGlobalKeys() {
