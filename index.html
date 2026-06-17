@@ -2,7 +2,8 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+  <meta name="theme-color" content="#f3f1f7" />
   <title>Eh Who This? — PayNow Name Wordle</title>
   <meta name="description" content="A satirical Singaporean name-guessing Wordle, inspired by PayNow's X-censored names." />
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>💸</text></svg>" />
@@ -22,14 +23,14 @@
       </div>
 
       <div class="race-select">
-        <label class="race-label" for="race-pick">Eh, choose your bro 🤝</label>
-        <select id="race-pick" class="race-dropdown">
-          <option value="random">Rojak 🎲 (surprise me)</option>
-          <option value="chinese">Chinese</option>
-          <option value="malay">Malay</option>
-          <option value="indian">Indian</option>
-          <option value="eurasian">Eurasian</option>
-        </select>
+        <span class="race-label">Eh, choose your bro 🤝</span>
+        <div class="race-seg" role="tablist" aria-label="Choose race">
+          <button class="seg selected" data-race="random" aria-selected="true">Rojak</button>
+          <button class="seg" data-race="chinese" aria-selected="false">Chinese</button>
+          <button class="seg" data-race="malay" aria-selected="false">Malay</button>
+          <button class="seg" data-race="indian" aria-selected="false">Indian</button>
+          <button class="seg" data-race="eurasian" aria-selected="false">Eurasian</button>
+        </div>
       </div>
 
       <div class="mode-buttons">
