@@ -93,10 +93,15 @@ export function renderGrid(puzzle, guesses, input, activeRow) {
   const tiles = editableTiles(puzzle);
   const cursor = input.length; // next empty editable tile on the active row
 
-  for (let row = 0; row < 6; row++) {
-    const rowEl = el('div', 'guess-row');
+  // Render only past guesses + the active row (no empty future rows). Remaining
+  // attempts are shown as a compact dot indicator below.
+  const playing = activeRow >= 0;
+  const lastRow = playing ? activeRow : guesses.length - 1;
+
+  for (let row = 0; row <= lastRow; row++) {
     const past = row < guesses.length;
-    const active = row === activeRow;
+    const active = playing && row === activeRow;
+    const rowEl = el('div', `guess-row${past ? ' past' : ''}${active ? ' active' : ''}`);
 
     // Per-row scoring for past guesses.
     let scored = null;
@@ -137,6 +142,15 @@ export function renderGrid(puzzle, guesses, input, activeRow) {
       rowEl.append(group);
     });
     host.append(rowEl);
+  }
+
+  if (playing) {
+    const used = guesses.length;
+    const left = 6 - used;
+    const dots = el('div', 'attempts');
+    for (let i = 0; i < 6; i++) dots.append(el('span', `dot${i < used ? ' filled' : ''}`));
+    dots.append(el('span', 'attempts-label', `${left} ${left === 1 ? 'try' : 'tries'} left`));
+    host.append(dots);
   }
 }
 

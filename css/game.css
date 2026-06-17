@@ -3,15 +3,15 @@
 .prompt { text-align: center; font-size: 13px; color: var(--muted); margin: 14px 0 8px; }
 
 /* ----- Grid ----- */
-.grid { display: flex; flex-direction: column; gap: 6px; align-items: center; }
+.grid { display: flex; flex-direction: column; gap: 14px; align-items: center; }
 .guess-row {
   display: flex; flex-wrap: wrap; justify-content: center;
-  align-items: center; gap: 10px; width: 100%;
+  align-items: center; gap: 8px; width: 100%;
 }
 .part-group { display: flex; flex-wrap: nowrap; gap: 4px; }
 
 .tile {
-  --sz: clamp(26px, 8.5vw, 40px);
+  --sz: clamp(24px, 7.6vw, 38px);
   width: var(--sz); height: var(--sz);
   display: flex; align-items: center; justify-content: center;
   border: 2px solid var(--tile-border); border-radius: 6px;
@@ -22,7 +22,24 @@
 }
 .tile.cursor { border-color: var(--paynow-purple); box-shadow: 0 0 0 2px rgba(91,42,134,.18); }
 
-.tile.given { background: #efeaf6; border-color: #d8cce8; color: var(--paynow-purple); }
+/* Revealed first letters recede so they don't dominate. */
+.tile.given { background: #f5f0fb; border-color: #e8ddf5; color: #9a82bd; }
+
+/* Active guess sits in a prominent card; past guesses shrink into history. */
+.guess-row.active {
+  background: #fff; border: 1px solid var(--line); border-radius: 14px;
+  padding: 12px 10px; box-shadow: 0 5px 16px rgba(20, 20, 40, .07); gap: 10px;
+}
+.guess-row.past { gap: 4px 6px; }
+.guess-row.past .tile { --sz: clamp(18px, 5.6vw, 26px); border-width: 2px; border-radius: 5px; }
+.guess-row.past .part-group { gap: 3px; }
+.guess-row.past .token-pill { font-size: 10px; padding: 2px 7px; }
+
+/* Remaining-attempts indicator. */
+.attempts { display: flex; align-items: center; gap: 6px; margin: 6px 0 2px; }
+.attempts .dot { width: 8px; height: 8px; border-radius: 50%; background: #d9d3e6; }
+.attempts .dot.filled { background: var(--paynow-purple); }
+.attempts-label { font-size: 12px; color: var(--muted); margin-left: 6px; }
 .tile.green { background: var(--green); border-color: var(--green); color: #fff; }
 .tile.yellow { background: var(--yellow); border-color: var(--yellow); color: #fff; }
 .tile.gray { background: var(--gray); border-color: var(--gray); color: #fff; }
