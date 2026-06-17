@@ -72,7 +72,27 @@
 .kb-key.yellow { background: var(--yellow); color: #fff; }
 .kb-key.gray { background: var(--gray); color: #fff; }
 
+/* ----- Help screen ----- */
+.help-screen.active { justify-content: flex-start; }
+.help-body { padding: 6px 2px 24px; overflow-y: auto; }
+.help-body p { font-size: 14.5px; line-height: 1.6; color: var(--ink); margin: 10px 0; }
+.help-lead { font-size: 17px; font-weight: 800; color: var(--paynow-purple); margin-top: 18px; }
+.help-body ol { padding-left: 20px; margin: 8px 0; }
+.help-body ol li { font-size: 14px; line-height: 1.65; margin: 8px 0; }
+.help-body code { background: #efeaf6; padding: 1px 5px; border-radius: 5px; font-size: 12px; }
+.help-note { color: var(--muted); font-size: 13px; }
+.chip {
+  display: inline-block; padding: 1px 8px; border-radius: 5px;
+  font-size: 12px; font-weight: 700; color: #fff;
+}
+.chip.green { background: var(--green); }
+.chip.yellow { background: var(--yellow); }
+.chip.gray { background: var(--gray); }
+.help-body .paynow-btn { margin-top: 14px; align-items: center; text-align: center; padding: 15px; font-size: 16px; font-weight: 700; }
+
 /* ----- Result screens ----- */
+.result-sub { font-size: 13.5px; margin: 2px 0 0; color: var(--muted); }
+.win .result-sub { color: var(--green-dark); }
 .result { align-items: center; text-align: center; justify-content: center; gap: 4px; }
 .result-title { font-size: 24px; font-weight: 800; margin: 8px 0 2px; }
 .win .result-title { color: var(--green-dark); }

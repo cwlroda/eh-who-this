@@ -14,31 +14,38 @@
 
     <!-- ============ LANDING ============ -->
     <section id="screen-landing" class="screen active">
+      <button class="help-fab js-help" aria-label="How to play">?</button>
       <div class="brand-block">
         <div class="logo-dot">💸</div>
         <h1 class="title">Eh Who This?</h1>
-        <p class="subtitle">You're about to PayNow someone &mdash; but the recipient's name is half&nbsp;censored.<br />Work out who you're paying before you hit send, or you'll get scammed.</p>
+        <p class="subtitle">You wan to PayNow somebody, but their name half kena&nbsp;censored.<br />Confirm who you paying first, or else you kena scam ah.</p>
       </div>
 
       <div class="mode-buttons">
         <button id="btn-easy" class="paynow-btn">
-          <span class="btn-main">PayNow</span>
-          <span class="btn-sub">Easy · first + last name</span>
+          <span class="btn-text">
+            <span class="btn-main">PayNow</span>
+            <span class="btn-sub">aiyah, damn easy one lah</span>
+          </span>
+          <span class="diff-pill">Easy</span>
         </button>
         <button id="btn-hard" class="paynow-btn paylater">
-          <span class="btn-main">PayLater</span>
-          <span class="btn-sub">Hard · full traditional name</span>
+          <span class="btn-text">
+            <span class="btn-main">PayLater</span>
+            <span class="btn-sub">wah so jialat sia 😬</span>
+          </span>
+          <span class="diff-pill">Hard</span>
         </button>
       </div>
 
-      <p class="how">One <b>PayNow</b> name and one <b>PayLater</b> name daily. 6 tries each.
-      Refreshes at midnight (SGT). Each name part shows its first letter; the rest are
-      <code>X</code>s, just like the real PayNow saga.</p>
+      <p class="how">One <b>PayNow</b> name and one <b>PayLater</b> name every day. 6 tries each, don't
+      anyhow. Reset at midnight (SGT). Every name part only show first letter, the rest all
+      <code>X</code> — same like the real PayNow saga. Steady or not?</p>
 
       <p class="disclaimer">
-        ⚠️ Satire. All names are assembled mechanically from common, generic and deliberately
+        ⚠️ Satire one ok. All the names here we anyhow mix-and-match from common, generic and damn
         stereotypical name parts across Singapore's Chinese, Malay, Indian and Eurasian communities,
-        purely for laughs. Any resemblance to real people is entirely coincidental. Not affiliated
+        purely for fun. Any similarity to real people is pure coincidence — don't sue. Not affiliated
         with PayNow, ABS, MAS or any bank.
       </p>
     </section>
@@ -48,12 +55,12 @@
       <header class="game-bar">
         <button class="icon-btn btn-home" aria-label="Back">‹</button>
         <span class="game-bar-title">Confirm transfer</span>
-        <span class="icon-btn ghost"></span>
+        <button class="icon-btn js-help" aria-label="How to play">?</button>
       </header>
 
       <div id="receipt" class="receipt"></div>
 
-      <p class="prompt">Who is this? Key in the full name.</p>
+      <p class="prompt">Eh, who this ah? Key in the full name leh.</p>
       <div id="grid" class="grid"></div>
       <p id="message" class="message"></p>
       <div id="keyboard" class="keyboard"></div>
@@ -63,6 +70,7 @@
     <section id="screen-win" class="screen result win">
       <div class="check-wrap"><div class="checkmark"></div></div>
       <h2 class="result-title">Transfer Successful</h2>
+      <p class="result-sub">Huat ah! Correct person, money sent. 🧧</p>
       <div class="result-amount" id="win-amount">S$ 0.00</div>
       <div class="result-name" id="win-name">—</div>
       <div class="result-meta">
@@ -80,10 +88,46 @@
     <section id="screen-lose" class="screen result lose">
       <div class="scam-icon">🚨</div>
       <h2 class="result-title">YOU HAVE BEEN SCAMMED</h2>
-      <p class="lose-text">You ran out of tries. The money's gone. It was:</p>
+      <p class="lose-text">Habis. 6 tries gone, money also fly liao. The fella was actually:</p>
       <div class="result-name" id="lose-name">—</div>
       <div class="result-actions">
         <button class="paynow-btn ghost-btn btn-home">Back home</button>
+      </div>
+    </section>
+
+    <!-- ============ HELP ============ -->
+    <section id="screen-help" class="screen help-screen">
+      <header class="game-bar">
+        <button class="icon-btn btn-home" aria-label="Back">‹</button>
+        <span class="game-bar-title">How to play</span>
+        <span class="icon-btn ghost"></span>
+      </header>
+
+      <div class="help-body">
+        <p class="help-lead">Eh, you really need help meh? 🤔</p>
+        <p>If you know how to play Wordle, you shouldn't even be on this page lah. Go back and
+        anyhow guess can already.</p>
+        <p>If you dunno what Wordle is… wah, then it's an actual <b>miracle</b> you found this game.
+        Respect. 🙏</p>
+
+        <p class="help-lead">Okay okay, since you scroll until here:</p>
+        <ol>
+          <li>Somebody kena PayNow-ed, but their name got censored — only first letter show, rest all
+          <code>X</code> like never study for exam.</li>
+          <li>You got <b>6 tries</b> to guess the whole name. Just type lah.</li>
+          <li><span class="chip green">Green</span> = correct letter, correct spot (steady).
+          <span class="chip yellow">Yellow</span> = correct letter, wrong spot (close close).
+          <span class="chip gray">Grey</span> = letter not inside (aiyo).</li>
+          <li>Every name part counted on its own one. The <i>bin</i>, <i>binti</i> and single
+          initials we give you free — don't say bojio.</li>
+          <li>Guess correct = transfer success, huat ah. Use finish 6 tries = you kena scam, money
+          fly liao. 💸</li>
+        </ol>
+
+        <p class="help-note">Two names every day — <b>PayNow</b> (easy) and <b>PayLater</b> (steady
+        jialat). Reset midnight, Singapore time. Come back tomorrow can? 😎</p>
+
+        <button class="paynow-btn solid btn-home">Okay lah, let me play</button>
       </div>
     </section>
 

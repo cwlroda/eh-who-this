@@ -13,14 +13,16 @@ shows up as `DXXXX TXX` — and you have 6 tries to work out who you're paying b
 
 ## How to play
 
-- Two daily puzzles, refreshed at midnight Singapore time:
-  - **PayNow** (Easy) — first + last name, e.g. `David Tan`, `Michael Pereira`, `Nur Aisyah Salleh`, `Arun Kumar`.
-  - **PayLater** (Hard) — full traditional names, e.g. `David Tan Wei Meng`, `John Michael Anthony Pereira`, `S Rajagopalan Narayanan`, `Muhammad Danish Irfan bin Ahmad`.
-- Each name part reveals its **first letter**; the rest are `X`s (so part lengths are visible).
-- Type the whole name. Each letter is coloured like Wordle — 🟩 right spot, 🟨 wrong spot, ⬛ not in
-  that part — scored **per name part**. Connectors like `bin`/`binti` and leading initials are given
-  for free.
-- 6 tries. Solve it for a "Transfer Successful" receipt; run out and you've "been scammed".
+If you know how to play Wordle, you shouldn't even be reading this lah. Anyway:
+
+- Two daily puzzles, reset at midnight Singapore time:
+  - **PayNow** (easy, aiyah damn easy one) — first + last name, e.g. `David Tan`, `Michael Pereira`, `Nur Aisyah Salleh`, `Arun Kumar`.
+  - **PayLater** (hard, wah so jialat) — full traditional names, e.g. `David Tan Wei Meng`, `John Michael Anthony Pereira`, `S Rajagopalan Narayanan`, `Muhammad Danish Irfan bin Ahmad`.
+- Every name part only shows its **first letter**; the rest are `X`s (so you can see how long each part is).
+- Type the whole name. Each letter is coloured like Wordle — 🟩 correct spot, 🟨 correct letter wrong
+  spot, ⬛ not inside — scored **per name part**. Connectors like `bin`/`binti` and leading initials
+  we give you free, don't say bojio.
+- 6 tries. Guess correct = "Transfer Successful" huat ah; use finish all 6 = you kena "scammed".
 
 ## ⚠️ Satire disclaimer
 

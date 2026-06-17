@@ -153,6 +153,8 @@ function init() {
   document.getElementById('btn-hard').addEventListener('click', () => startMode('hard'));
   document.querySelectorAll('.btn-home').forEach((b) =>
     b.addEventListener('click', () => showScreen('landing')));
+  document.querySelectorAll('.js-help').forEach((b) =>
+    b.addEventListener('click', () => showScreen('help')));
 
   document.getElementById('win-share').addEventListener('click', async () => {
     const text = shareText();
