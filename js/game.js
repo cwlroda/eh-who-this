@@ -10,9 +10,16 @@ import {
 } from './ui.js';
 
 const MODE_LABEL = { easy: 'PayNow', hard: 'PayLater' };
+const RACE_LABEL = {
+  chinese: 'Chinese', malay: 'Malay', indian: 'Indian', eurasian: 'Eurasian', random: 'Rojak',
+};
+
+// The race the player picked on the landing ("random" = Rojak / surprise).
+let selectedRace = 'random';
 
 const session = {
   mode: null,
+  race: 'random', // the chosen race token for this game
   puzzle: null,
   guesses: [],   // array of guessParts arrays
   input: [],     // letters for current row's editable tiles
@@ -20,8 +27,8 @@ const session = {
   status: 'playing',
 };
 
-function seedFor(mode) {
-  return cyrb53(`${mode}|${sgtDateString()}`);
+function seedFor(mode, race) {
+  return cyrb53(`${mode}|${race}|${sgtDateString()}`);
 }
 
 function rebuildKeyState() {
@@ -32,18 +39,19 @@ function rebuildKeyState() {
   }
 }
 
-function render() {
+function render(flipRow = -1) {
   const activeRow = session.status === 'playing' ? session.guesses.length : -1;
-  renderGrid(session.puzzle, session.guesses, session.input, activeRow);
+  renderGrid(session.puzzle, session.guesses, session.input, activeRow, flipRow);
   renderKeyboard(session.keyState, onKey);
 }
 
 function startMode(mode) {
   session.mode = mode;
-  session.puzzle = buildPuzzle(seedFor(mode), mode);
+  session.race = selectedRace;
+  session.puzzle = buildPuzzle(seedFor(mode, selectedRace), mode, selectedRace);
   session.input = [];
 
-  const saved = loadState(mode);
+  const saved = loadState(mode, selectedRace);
   if (saved) {
     session.guesses = saved.guesses;
     session.status = saved.status;
@@ -91,20 +99,21 @@ function submitGuess() {
   updateKeyStates(session.keyState, guessParts, scored);
   session.guesses.push(guessParts);
   session.input = [];
+  const flipRow = session.guesses.length - 1;
 
   if (isWin(scored)) {
     session.status = 'won';
-    saveState(session.mode, session.guesses, session.status);
-    render();
-    setTimeout(showWin, 900);
+    saveState(session.mode, session.race, session.guesses, session.status);
+    render(flipRow);
+    setTimeout(showWin, 1400);
   } else if (session.guesses.length >= 6) {
     session.status = 'lost';
-    saveState(session.mode, session.guesses, session.status);
-    render();
-    setTimeout(showLose, 700);
+    saveState(session.mode, session.race, session.guesses, session.status);
+    render(flipRow);
+    setTimeout(showLose, 1400);
   } else {
-    saveState(session.mode, session.guesses, session.status);
-    render();
+    saveState(session.mode, session.race, session.guesses, session.status);
+    render(flipRow);
   }
 }
 
@@ -116,17 +125,34 @@ function shareText() {
     return scored.map((s) => (s.token ? '·' : s.states.map((x) => EMO[x]).join(''))).join(' ');
   });
   const score = session.status === 'won' ? `${session.guesses.length}/6` : 'X/6';
-  return `Eh Who This? (${MODE_LABEL[session.mode]}) ${sgtDateString()} ${score}\n` +
+  const tag = `${MODE_LABEL[session.mode]} · ${RACE_LABEL[session.puzzle.race]}`;
+  return `Eh Who This? (${tag}) ${sgtDateString()} ${score}\n` +
     `${lines.join('\n')}\n` +
     'cwlroda.github.io/eh-who-this';
 }
 
+// Animate a money figure from 0 to target (ease-out), respecting reduced motion.
+function countUp(el, target, ms) {
+  if (matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    el.textContent = 'S$ ' + target.toFixed(2);
+    return;
+  }
+  const start = performance.now();
+  const step = (now) => {
+    const t = Math.min(1, (now - start) / ms);
+    const eased = 1 - Math.pow(1 - t, 3);
+    el.textContent = 'S$ ' + (target * eased).toFixed(2);
+    if (t < 1) requestAnimationFrame(step);
+  };
+  requestAnimationFrame(step);
+}
+
 function showWin() {
   document.getElementById('win-name').textContent = fullName(session.puzzle);
-  document.getElementById('win-amount').textContent = 'S$ ' + session.puzzle.amount;
+  countUp(document.getElementById('win-amount'), parseFloat(session.puzzle.amount), 800);
   document.getElementById('win-time').textContent = sgtTimestamp();
   document.getElementById('win-ref').textContent =
-    'EWT' + String(seedFor(session.mode) % 1e9).padStart(9, '0');
+    'EWT' + String(seedFor(session.mode, session.race) % 1e9).padStart(9, '0');
   document.getElementById('win-tries').textContent = `${session.guesses.length}/6`;
   showScreen('win');
 }
@@ -153,6 +179,13 @@ function init() {
   document.getElementById('btn-hard').addEventListener('click', () => startMode('hard'));
   document.querySelectorAll('.btn-home').forEach((b) =>
     b.addEventListener('click', () => showScreen('landing')));
+
+  // "Choose your bro" race selector.
+  const racePills = document.querySelectorAll('.race-pill');
+  racePills.forEach((b) => b.addEventListener('click', () => {
+    selectedRace = b.dataset.race;
+    racePills.forEach((x) => x.classList.toggle('selected', x === b));
+  }));
   document.querySelectorAll('.js-help').forEach((b) =>
     b.addEventListener('click', () => showScreen('help')));
 
