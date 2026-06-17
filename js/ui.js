@@ -82,84 +82,120 @@ export function inputToGuessParts(puzzle, input) {
   return chars.map((c) => c.join(''));
 }
 
-// Render the 6-row guess grid.
-//   puzzle       the active puzzle
-//   guesses      array of past guessParts arrays (full uppercase strings per part)
-//   input        array of letters for the active row's editable tiles
+// Render the guess grid: a scrollable history of past guesses (its own div) plus
+// a fixed current row + attempts indicator that never overflow.
+//   cells        array (per editable tile) of typed letters ('' = empty)
+//   cursor       index of the selected editable tile on the active row
 //   activeRow    index of the row currently being typed (or -1 if game over)
-//   flipRow      index of a just-submitted row to animate with a tile flip (-1 = none)
-export function renderGrid(puzzle, guesses, input, activeRow, flipRow = -1) {
+//   flipRow      index of a just-submitted row to flip-animate (-1 = none)
+//   onCellClick  callback(editableIndex) when an active-row tile is tapped
+export function renderGrid(puzzle, guesses, cells, cursor, activeRow, flipRow, onCellClick) {
   const host = document.getElementById('grid');
   host.innerHTML = '';
   const tiles = editableTiles(puzzle);
-  const cursor = input.length; // next empty editable tile on the active row
-
-  // Render only past guesses + the active row (no empty future rows). Remaining
-  // attempts are shown as a compact dot indicator below.
+  const tileIndex = new Map();
+  tiles.forEach((t, i) => tileIndex.set(`${t.partIndex}:${t.charIndex}`, i));
   const playing = activeRow >= 0;
-  const lastRow = playing ? activeRow : guesses.length - 1;
 
-  for (let row = 0; row <= lastRow; row++) {
-    const past = row < guesses.length;
-    const active = playing && row === activeRow;
+  const buildRow = (row, { past, active }) => {
     const rowEl = el('div', `guess-row${past ? ' past' : ''}${active ? ' active' : ''}`);
-
-    // Per-row scoring for past guesses.
-    let scored = null;
-    if (past) scored = scoreGuess(guesses[row], puzzle.parts);
-
+    const scored = past ? scoreGuess(guesses[row], puzzle.parts) : null;
     const animate = row === flipRow;
-    let cellIdx = 0; // running tile index across the row, for flip stagger
+    let cellIdx = 0;
 
     puzzle.parts.forEach((p, pi) => {
-      if (p.token) {
-        rowEl.append(el('div', 'token-pill', p.text));
-        return;
-      }
+      if (p.token) { rowEl.append(el('div', 'token-pill', p.text)); return; }
       const group = el('div', 'part-group');
       const len = p.text.length;
       for (let ci = 0; ci < len; ci++) {
-        // Non-letter chars (e.g. the space in "de Souza") render as a separator.
         if (ci > 0 && !isLetter(p.text[ci])) {
-          const sep = el('div', 'tile-sep', p.text[ci] === ' ' ? '' : p.text[ci]);
-          group.append(sep);
+          group.append(el('div', 'tile-sep', p.text[ci] === ' ' ? '' : p.text[ci]));
           continue;
         }
         const tile = el('div', 'tile');
         if (ci === 0 || p.locked) {
-          // Revealed first letter (or whole initial) — always shown, locked.
+          // Anchor: revealed first letter (or whole initial). Never scored green.
           tile.textContent = p.text[ci].toUpperCase();
-          tile.classList.add('locked');
-          if (past && scored) tile.classList.add(scored[pi].states[ci]);
-          else tile.classList.add('given');
-        } else if (past && scored) {
+          tile.classList.add('anchor');
+        } else if (past) {
           tile.textContent = guesses[row][pi][ci];
           tile.classList.add(scored[pi].states[ci]);
         } else if (active) {
-          // Map this (pi,ci) to its editable-tile index.
-          const ti = tiles.findIndex((t) => t.partIndex === pi && t.charIndex === ci);
-          if (ti > -1 && ti < input.length) tile.textContent = input[ti];
-          if (ti === cursor) tile.classList.add('cursor');
+          const ti = tileIndex.get(`${pi}:${ci}`);
+          if (ti != null) {
+            if (cells[ti]) tile.textContent = cells[ti];
+            if (ti === cursor) tile.classList.add('cursor');
+            tile.addEventListener('click', () => onCellClick(ti));
+          }
         }
-        if (animate) {
-          tile.classList.add('flip');
-          tile.style.animationDelay = `${cellIdx * 0.11}s`;
-        }
+        if (animate) { tile.classList.add('flip'); tile.style.animationDelay = `${cellIdx * 0.11}s`; }
         cellIdx++;
         group.append(tile);
       }
       rowEl.append(group);
     });
-    host.append(rowEl);
-  }
+    return rowEl;
+  };
 
+  // Past guesses live in their own scrollable container.
+  const historyEl = el('div', 'history');
+  for (let row = 0; row < guesses.length; row++) {
+    historyEl.append(buildRow(row, { past: true, active: false }));
+  }
+  host.append(historyEl);
+
+  // Current row + attempts are fixed (don't scroll, don't overflow).
+  const currentEl = el('div', 'current');
   if (playing) {
+    currentEl.append(buildRow(activeRow, { past: false, active: true }));
     const used = guesses.length;
     const left = 6 - used;
     const dots = el('div', 'attempts');
     for (let i = 0; i < 6; i++) dots.append(el('span', `dot${i < used ? ' filled' : ''}`));
     dots.append(el('span', 'attempts-label', `${left} ${left === 1 ? 'try' : 'tries'} left`));
-    host.append(dots);
+    currentEl.append(dots);
+  }
+  host.append(currentEl);
+
+  if (!playing && guesses.length) {
+    fitBoard(historyEl, guesses.length);
+  } else {
+    historyEl.classList.remove('fit');
+    historyEl.style.removeProperty('--fit-sz');
+  }
+
+  historyEl.scrollTop = historyEl.scrollHeight; // keep the latest guess in view
+}
+
+// On the finished/admire board, size the cells to fill the available area based
+// on the number of rows (guesses) and columns (tiles per row), so it doesn't
+// look empty. Falls back silently if the container isn't laid out yet.
+function fitBoard(historyEl, rows) {
+  const row = historyEl.querySelector('.guess-row');
+  if (!row) return;
+  const availW = historyEl.clientWidth - 8;
+  const availH = historyEl.clientHeight - 8;
+  if (availW < 40 || availH < 40) return; // not laid out yet
+
+  const tiles = row.querySelectorAll('.tile').length;
+  const seps = row.querySelectorAll('.tile-sep').length;
+  const tokens = row.querySelectorAll('.token-pill').length;
+  const parts = row.querySelectorAll('.part-group').length;
+
+  const units = tiles + seps * 0.4 + tokens * 1.8;       // tile-equivalent widths
+  const gapW = (tiles + seps + tokens) * 4 + parts * 4;  // approx inter-tile gaps
+  const rowGap = 8;
+  const sizeW = (availW - gapW) / Math.max(1, units);
+  const sizeH = (availH - rows * rowGap) / rows;
+  let s = Math.max(22, Math.min(56, Math.min(sizeW, sizeH)));
+
+  historyEl.classList.add('fit');
+  historyEl.style.setProperty('--fit-sz', `${s}px`);
+
+  // One correction pass if a row still overflows the width.
+  if (row.scrollWidth > availW) {
+    s = Math.max(18, s * (availW / row.scrollWidth));
+    historyEl.style.setProperty('--fit-sz', `${s}px`);
   }
 }
 

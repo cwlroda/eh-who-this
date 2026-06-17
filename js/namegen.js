@@ -5,12 +5,19 @@ import { PARTS, STRUCTURES, BANKS } from './data.js';
 export const RACES = ['chinese', 'malay', 'indian', 'eurasian'];
 const ALPHABET = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
 
-// Parts matching race + role + chosen gender (unisex parts always qualify).
-function pool(race, role, gender) {
+// Easy mode only uses short parts (<=6 chars, i.e. <=5 letters to guess after the
+// revealed first letter); hard mode uses parts of any length.
+const EASY_MAX_LEN = 6;
+const maxLenFor = (mode) => (mode === 'easy' ? EASY_MAX_LEN : Infinity);
+
+// Parts matching race + role + chosen gender (unisex parts always qualify),
+// optionally capped to a maximum text length.
+function pool(race, role, gender, maxLen = Infinity) {
   return PARTS.filter((p) =>
     p.race === race &&
     p.roles.includes(role) &&
-    (p.gender === 'u' || p.gender === gender));
+    (p.gender === 'u' || p.gender === gender) &&
+    p.text.length <= maxLen);
 }
 
 // Generate a fake Singapore mobile number, partly masked PayNow-style.
@@ -30,10 +37,10 @@ function genNRIC(rng) {
   return `${prefix}XXXX${digits}${suffix}`;
 }
 
-// A plausible everyday transfer amount in SGD.
+// A transfer amount in SGD: 1..500, weighted toward 1..200, random cents.
 function genAmount(rng) {
-  const dollars = randInt(rng, 1, 250);
-  const cents = pick(rng, ['00', '50', '20', '80', '90', '10', '88']);
+  const dollars = rng() < 0.7 ? randInt(rng, 1, 200) : randInt(rng, 201, 500);
+  const cents = String(randInt(rng, 0, 99)).padStart(2, '0');
   return `${dollars}.${cents}`;
 }
 
@@ -52,6 +59,7 @@ export function buildPuzzle(seed, mode, race = 'random') {
 
   const chosenRace = race === 'random' ? pick(rng, RACES) : race;
   const gender = rng() < 0.5 ? 'm' : 'f';
+  const maxLen = maxLenFor(mode);
   const candidates = STRUCTURES.filter((s) => s.race === chosenRace && s.mode === mode);
   const structure = pick(rng, candidates);
 
@@ -67,8 +75,8 @@ export function buildPuzzle(seed, mode, race = 'random') {
     } else if (slot.kind === 'initial') {
       parts.push({ text: pick(rng, ALPHABET.split('')), locked: true, token: false });
     } else {
-      let candidatesPool = pool(chosenRace, slot.role, gender).filter((p) => !usedIds.has(p.id));
-      if (candidatesPool.length === 0) candidatesPool = pool(chosenRace, slot.role, gender); // fallback
+      let candidatesPool = pool(chosenRace, slot.role, gender, maxLen).filter((p) => !usedIds.has(p.id));
+      if (candidatesPool.length === 0) candidatesPool = pool(chosenRace, slot.role, gender, maxLen); // fallback
       const p = pick(rng, candidatesPool);
       usedIds.add(p.id);
       parts.push({ text: p.text, locked: false, token: false });
@@ -88,11 +96,12 @@ export function buildPuzzle(seed, mode, race = 'random') {
 export function selfCheck() {
   const problems = [];
   for (const s of STRUCTURES) {
+    const maxLen = maxLenFor(s.mode);
     for (const slot of s.slots) {
       if (slot.kind !== 'part') continue;
       for (const g of ['m', 'f']) {
-        if (pool(s.race, slot.role, g).length === 0) {
-          problems.push(`${s.id}: no parts for role "${slot.role}" gender "${g}"`);
+        if (pool(s.race, slot.role, g, maxLen).length === 0) {
+          problems.push(`${s.id}: no parts for role "${slot.role}" gender "${g}" (maxLen ${maxLen})`);
         }
       }
     }
