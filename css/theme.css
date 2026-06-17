@@ -51,9 +51,11 @@ body {
 
 .screen { display: none; padding: 16px 18px 20px; height: 100%; overflow: hidden; }
 .screen.active { display: flex; flex-direction: column; }
+/* Landing: distribute content evenly so it isn't top-heavy with an empty bottom. */
+#screen-landing.active { justify-content: space-evenly; }
 
 /* ----- Landing ----- */
-.brand-block { text-align: center; margin-top: 8px; }
+.brand-block { text-align: center; margin: 0; }
 .logo-dot {
   font-size: 40px;
   width: 72px; height: 72px; line-height: 72px;
@@ -74,22 +76,21 @@ body {
 }
 .subtitle { color: var(--muted); font-size: 14px; line-height: 1.45; margin: 0 auto; max-width: 340px; }
 
-/* "Choose your bro" race selector. */
-.race-select { margin: 16px 0 4px; }
-.race-label { display: block; text-align: center; font-size: 13px; font-weight: 700; margin-bottom: 8px; }
-.race-pills { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; }
-.race-pill {
-  border: 1.5px solid var(--line); background: #fff; color: var(--muted);
-  font-size: 13px; font-weight: 700; padding: 7px 13px; border-radius: 999px; cursor: pointer;
-  transition: transform .08s ease, background .12s ease, color .12s ease, border-color .12s ease;
+/* "Choose your bro" race selector (compact dropdown). */
+.race-select { text-align: center; }
+.race-label { display: block; font-size: 13px; font-weight: 700; margin-bottom: 8px; }
+.race-dropdown {
+  appearance: none; -webkit-appearance: none;
+  font-family: inherit; font-size: 14px; font-weight: 700; color: var(--ink);
+  padding: 11px 42px 11px 18px; min-width: 230px;
+  border: 1.5px solid var(--line); border-radius: 999px; background-color: #fff;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M1 1.5 6 6.5 11 1.5' fill='none' stroke='%235b2a86' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat; background-position: right 16px center;
+  cursor: pointer;
 }
-.race-pill:active { transform: translateY(1px); }
-.race-pill.selected {
-  background: linear-gradient(135deg, var(--paynow-purple), var(--paynow-magenta));
-  color: #fff; border-color: transparent;
-}
+.race-dropdown:focus { outline: none; border-color: var(--paynow-purple); }
 
-.mode-buttons { display: flex; flex-direction: column; gap: 12px; margin: 14px 0 12px; }
+.mode-buttons { display: flex; flex-direction: column; gap: 12px; margin: 0; width: 100%; }
 
 .paynow-btn {
   border: none; cursor: pointer; border-radius: var(--radius);
@@ -134,7 +135,7 @@ body {
 }
 
 .disclaimer {
-  margin-top: auto; font-size: 11px; color: var(--muted); line-height: 1.4;
+  margin: 0; font-size: 11px; color: var(--muted); line-height: 1.4;
   background: #fff; border: 1px solid var(--line); border-radius: 12px; padding: 9px 12px;
 }
 

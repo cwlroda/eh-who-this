@@ -180,12 +180,9 @@ function init() {
   document.querySelectorAll('.btn-home').forEach((b) =>
     b.addEventListener('click', () => showScreen('landing')));
 
-  // "Choose your bro" race selector.
-  const racePills = document.querySelectorAll('.race-pill');
-  racePills.forEach((b) => b.addEventListener('click', () => {
-    selectedRace = b.dataset.race;
-    racePills.forEach((x) => x.classList.toggle('selected', x === b));
-  }));
+  // "Choose your bro" race selector (compact dropdown).
+  const racePick = document.getElementById('race-pick');
+  if (racePick) racePick.addEventListener('change', () => { selectedRace = racePick.value; });
   document.querySelectorAll('.js-help').forEach((b) =>
     b.addEventListener('click', () => showScreen('help')));
 
