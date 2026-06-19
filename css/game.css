@@ -200,6 +200,40 @@
 }
 .lose { background: #fff5f5; }
 
+/* ----- Short viewports -----
+   On screens with little vertical room (small phones, on-screen keyboard up,
+   browser chrome eating height), the fixed receipt + keyboard squeeze the
+   scrollable guess history. Progressively compact those so the grid keeps room. */
+@media (max-height: 760px) {
+  #screen-game .game-bar { margin-bottom: 6px; }
+  #screen-game .receipt { padding: 10px 14px; }
+  #screen-game .receipt-meta { margin-top: 8px; padding-top: 7px; }
+  #screen-game .masked-name { font-size: 18px; }
+  .kb-key { height: 44px; }
+}
+@media (max-height: 680px) {
+  #screen-game .receipt { padding: 8px 13px; box-shadow: none; }
+  #screen-game .receipt-head { margin-bottom: 6px; }
+  #screen-game .receipt-brand { font-size: 16px; }
+  #screen-game .receipt-name { padding-top: 8px; }
+  #screen-game .masked-name { font-size: 16px; letter-spacing: 1px; }
+  #screen-game .receipt-meta { margin-top: 7px; padding-top: 6px; }
+  #screen-game .meta-row { font-size: 12.5px; padding: 2px 0; }
+  #screen-game .grid { margin-top: 6px; }
+  #screen-game .guess-row.active { padding: 9px 9px; gap: 8px; }
+  .message { min-height: 12px; margin: 3px 0 0; }
+  .keyboard { gap: 5px; padding-top: 2px; }
+  .kb-key { height: 40px; font-size: 14px; }
+}
+@media (max-height: 600px) {
+  #screen-game .receipt { padding: 7px 12px; }
+  #screen-game .meta-row { padding: 1px 0; font-size: 12px; }
+  #screen-game .grid { margin-top: 4px; }
+  .keyboard { gap: 4px; }
+  .kb-key { height: 36px; border-radius: 6px; }
+  .tile { --sz: clamp(20px, 6.6vw, 30px); }
+}
+
 /* Respect users who prefer reduced motion: no looping/entrance animations. */
 @media (prefers-reduced-motion: reduce) {
   .logo-dot,

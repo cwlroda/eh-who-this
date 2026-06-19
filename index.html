@@ -3,10 +3,33 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
-  <meta name="theme-color" content="#ffffff" />
+  <meta name="theme-color" content="#5b2a86" />
   <title>Eh Who This? · PayNow Name Wordle</title>
   <meta name="description" content="A satirical Singaporean name-guessing Wordle, inspired by PayNow's X-censored names." />
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>💸</text></svg>" />
+
+  <!-- Favicons / app icons -->
+  <link rel="icon" type="image/svg+xml" href="./assets/favicon.svg" />
+  <link rel="icon" type="image/png" sizes="32x32" href="./assets/favicon-32.png" />
+  <link rel="icon" type="image/png" sizes="192x192" href="./assets/icon-192.png" />
+  <link rel="apple-touch-icon" sizes="180x180" href="./assets/apple-touch-icon.png" />
+
+  <!-- Link preview (Open Graph) -->
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="Eh Who This?" />
+  <meta property="og:title" content="Eh Who This? · PayNow Name Wordle" />
+  <meta property="og:description" content="You wan to PayNow somebody, but the name kena censored. Confirm who first, or kena scam ah." />
+  <meta property="og:url" content="https://cwlroda.github.io/eh-who-this/" />
+  <meta property="og:image" content="https://cwlroda.github.io/eh-who-this/assets/og-image.png" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:alt" content="Eh Who This? — a censored PayNow recipient name shown as Wordle tiles." />
+
+  <!-- Link preview (Twitter / X) -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Eh Who This? · PayNow Name Wordle" />
+  <meta name="twitter:description" content="You wan to PayNow somebody, but the name kena censored. Confirm who first, or kena scam ah." />
+  <meta name="twitter:image" content="https://cwlroda.github.io/eh-who-this/assets/og-image.png" />
+
   <link rel="stylesheet" href="./css/theme.css" />
   <link rel="stylesheet" href="./css/game.css" />
 </head>
@@ -49,11 +72,11 @@
         </button>
       </div>
 
-      <p class="disclaimer">
-        ⚠️ Satire one ok. All the names here we anyhow mix-and-match from common, generic and damn
-        stereotypical name parts, purely for fun. Any similarity to real people is pure coincidence,
-        don't sue ah. Not affiliated with PayNow, ABS, MAS or any bank.
-      </p>
+      <button type="button" class="disclaimer-trigger js-disclaimer-open" aria-haspopup="dialog">
+        <span class="disclaimer-trigger-icon" aria-hidden="true">⚠️</span>
+        <span class="disclaimer-trigger-text">Satire one ok. Read the fine print</span>
+        <span class="disclaimer-trigger-chevron" aria-hidden="true">›</span>
+      </button>
     </section>
 
     <!-- ============ GAME ============ -->
@@ -133,6 +156,23 @@
     </section>
 
   </main>
+
+  <!-- ============ DISCLAIMER MODAL ============ -->
+  <div id="disclaimer-modal" class="modal-overlay" hidden>
+    <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="disclaimer-title">
+      <button type="button" class="modal-close js-disclaimer-close" aria-label="Close">×</button>
+      <div class="modal-emoji" aria-hidden="true">⚠️</div>
+      <h2 id="disclaimer-title" class="modal-title">Satire one ok 🤝</h2>
+      <p class="modal-body">
+        All the names here we anyhow mix-and-match from common, generic and damn stereotypical name
+        parts, purely for fun. Any similarity to real people is pure coincidence, don't sue ah.
+      </p>
+      <p class="modal-body modal-body-muted">
+        Not affiliated with PayNow, ABS, MAS or any bank. Just a game lah. 😅
+      </p>
+      <button type="button" class="paynow-btn solid js-disclaimer-close">Okay lah, understood</button>
+    </div>
+  </div>
 
   <script type="module" src="./js/game.js"></script>
 </body>

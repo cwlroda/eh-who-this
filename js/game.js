@@ -224,6 +224,21 @@ function init() {
   }));
   document.querySelectorAll('.js-help').forEach((b) =>
     b.addEventListener('click', () => showScreen('help')));
+
+  // Disclaimer modal: open from the landing trigger, close via button/backdrop/Esc.
+  const disclaimerModal = document.getElementById('disclaimer-modal');
+  const openDisclaimer = () => { disclaimerModal.hidden = false; };
+  const closeDisclaimer = () => { disclaimerModal.hidden = true; };
+  document.querySelectorAll('.js-disclaimer-open').forEach((b) =>
+    b.addEventListener('click', openDisclaimer));
+  document.querySelectorAll('.js-disclaimer-close').forEach((b) =>
+    b.addEventListener('click', closeDisclaimer));
+  disclaimerModal.addEventListener('click', (e) => {
+    if (e.target === disclaimerModal) closeDisclaimer();
+  });
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && !disclaimerModal.hidden) closeDisclaimer();
+  });
   document.querySelectorAll('.btn-admire').forEach((b) =>
     b.addEventListener('click', admire));
 
