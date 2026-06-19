@@ -49,11 +49,11 @@
         </button>
       </div>
 
-      <p class="disclaimer">
-        ⚠️ Satire one ok. All the names here we anyhow mix-and-match from common, generic and damn
-        stereotypical name parts, purely for fun. Any similarity to real people is pure coincidence,
-        don't sue ah. Not affiliated with PayNow, ABS, MAS or any bank.
-      </p>
+      <button type="button" class="disclaimer-trigger js-disclaimer-open" aria-haspopup="dialog">
+        <span class="disclaimer-trigger-icon" aria-hidden="true">⚠️</span>
+        <span class="disclaimer-trigger-text">Satire one ok. Read the fine print</span>
+        <span class="disclaimer-trigger-chevron" aria-hidden="true">›</span>
+      </button>
     </section>
 
     <!-- ============ GAME ============ -->
@@ -133,6 +133,23 @@
     </section>
 
   </main>
+
+  <!-- ============ DISCLAIMER MODAL ============ -->
+  <div id="disclaimer-modal" class="modal-overlay" hidden>
+    <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="disclaimer-title">
+      <button type="button" class="modal-close js-disclaimer-close" aria-label="Close">×</button>
+      <div class="modal-emoji" aria-hidden="true">⚠️</div>
+      <h2 id="disclaimer-title" class="modal-title">Satire one ok 🤝</h2>
+      <p class="modal-body">
+        All the names here we anyhow mix-and-match from common, generic and damn stereotypical name
+        parts, purely for fun. Any similarity to real people is pure coincidence, don't sue ah.
+      </p>
+      <p class="modal-body modal-body-muted">
+        Not affiliated with PayNow, ABS, MAS or any bank. Just a game lah. 😅
+      </p>
+      <button type="button" class="paynow-btn solid js-disclaimer-close">Okay lah, understood</button>
+    </div>
+  </div>
 
   <script type="module" src="./js/game.js"></script>
 </body>
