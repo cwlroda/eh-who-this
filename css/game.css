@@ -20,6 +20,13 @@
   perspective: 600px;
 }
 .part-group { display: flex; flex-wrap: nowrap; gap: 4px; }
+/* The keyboard colours apply to one word at a time. On the active row, the word
+   being typed is tappable (tap to switch) and the focused word is highlighted
+   so it's clear the green/yellow/grey keys are for that word, not the name. */
+.guess-row.active .part-group.tappable { cursor: pointer; border-radius: 9px; padding: 4px; margin: -4px; }
+.guess-row.active .part-group.active-word {
+  background: #f1ebfa; box-shadow: 0 0 0 2px rgba(91, 42, 134, .35);
+}
 
 .tile {
   --sz: clamp(24px, 7.6vw, 38px);
@@ -34,7 +41,7 @@
 .tile.cursor { border-color: var(--paynow-purple); box-shadow: 0 0 0 2px rgba(91,42,134,.18); }
 
 /* Anchor = the revealed first letter of each part. Distinct purple, never green,
-   and excluded from keyboard colouring (see updateKeyStates). */
+   and excluded from keyboard colouring (see keyStateForPart). */
 .tile.anchor { background: #e6ddf6; border-color: #cab6ec; color: var(--paynow-purple); }
 
 /* Active guess sits in a prominent card; past guesses shrink into history. */

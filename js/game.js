@@ -2,7 +2,7 @@
 import { cyrb53 } from './prng.js';
 import { sgtDateString, sgtTimestamp } from './date.js';
 import { buildPuzzle, selfCheck } from './namegen.js';
-import { scoreGuess, updateKeyStates, isWin } from './wordle.js';
+import { scoreGuess, keyStateForPart, hardModeViolation, isWin } from './wordle.js';
 import { loadState, saveState } from './storage.js';
 import {
   showScreen, renderReceipt, renderGrid, renderKeyboard, setMessage,
@@ -24,7 +24,6 @@ const session = {
   guesses: [],   // array of guessParts arrays
   cells: [],     // fixed-length: typed letter ('' = empty) per editable tile
   cursor: 0,     // index of the selected editable tile
-  keyState: {},
   status: 'playing',
 };
 
@@ -32,18 +31,21 @@ function seedFor(mode, race) {
   return cyrb53(`${mode}|${race}|${sgtDateString()}`);
 }
 
-function rebuildKeyState() {
-  session.keyState = {};
-  for (const g of session.guesses) {
-    const scored = scoreGuess(g, session.puzzle.parts);
-    updateKeyStates(session.keyState, g, scored);
-  }
+// Which name part the cursor is in (the word the keyboard is coloured for).
+// When the cursor is past the last tile (all filled), stay on the last word.
+function activePartIndex() {
+  const tiles = editableTiles(session.puzzle);
+  if (!tiles.length) return -1;
+  const tile = tiles[session.cursor] || tiles[tiles.length - 1];
+  return tile.partIndex;
 }
 
 function render(flipRow = -1) {
   const activeRow = session.status === 'playing' ? session.guesses.length : -1;
-  renderGrid(session.puzzle, session.guesses, session.cells, session.cursor, activeRow, flipRow, setCursor);
-  renderKeyboard(session.keyState, onKey);
+  const activePart = activePartIndex();
+  renderGrid(session.puzzle, session.guesses, session.cells, session.cursor, activeRow, flipRow, setCursor, activePart);
+  const keyState = keyStateForPart(session.guesses, session.puzzle.parts, activePart);
+  renderKeyboard(keyState, onKey);
 }
 
 function setCursor(i) {
@@ -74,7 +76,6 @@ function startMode(mode) {
     session.guesses = [];
     session.status = 'playing';
   }
-  rebuildKeyState();
 
   renderReceipt(session.puzzle);
   setMessage('');
@@ -118,8 +119,18 @@ function onKey(key) {
 function submitGuess() {
   const n = session.cells.length;
   const guessParts = inputToGuessParts(session.puzzle, session.cells);
+
+  // PayLater (hard) mode: revealed hints must be reused (per word). A rejected
+  // guess does not consume a try and the typed cells are left in place.
+  if (session.mode === 'hard') {
+    const violation = hardModeViolation(guessParts, session.guesses, session.puzzle.parts);
+    if (violation) {
+      setMessage(violation);
+      return;
+    }
+  }
+
   const scored = scoreGuess(guessParts, session.puzzle.parts);
-  updateKeyStates(session.keyState, guessParts, scored);
   session.guesses.push(guessParts);
   session.cells = new Array(n).fill('');
   session.cursor = 0;

@@ -88,14 +88,18 @@ export function inputToGuessParts(puzzle, input) {
 //   cursor       index of the selected editable tile on the active row
 //   activeRow    index of the row currently being typed (or -1 if game over)
 //   flipRow      index of a just-submitted row to flip-animate (-1 = none)
-//   onCellClick  callback(editableIndex) when an active-row tile is tapped
-export function renderGrid(puzzle, guesses, cells, cursor, activeRow, flipRow, onCellClick) {
+//   onCellClick  callback(editableIndex) when an active-row tile/word is tapped
+//   activePart   index of the part the keyboard is coloured for (highlighted)
+export function renderGrid(puzzle, guesses, cells, cursor, activeRow, flipRow, onCellClick, activePart = -1) {
   const host = document.getElementById('grid');
   host.innerHTML = '';
   const tiles = editableTiles(puzzle);
   const tileIndex = new Map();
   tiles.forEach((t, i) => tileIndex.set(`${t.partIndex}:${t.charIndex}`, i));
   const playing = activeRow >= 0;
+  // First editable tile of each part, for tap-to-focus a whole word.
+  const firstTileOfPart = new Map();
+  tiles.forEach((t, i) => { if (!firstTileOfPart.has(t.partIndex)) firstTileOfPart.set(t.partIndex, i); });
 
   const buildRow = (row, { past, active }) => {
     const rowEl = el('div', `guess-row${past ? ' past' : ''}${active ? ' active' : ''}`);
@@ -106,6 +110,13 @@ export function renderGrid(puzzle, guesses, cells, cursor, activeRow, flipRow, o
     puzzle.parts.forEach((p, pi) => {
       if (p.token) { rowEl.append(el('div', 'token-pill', p.text)); return; }
       const group = el('div', 'part-group');
+      // Tapping anywhere in the active word focuses it (recolours the keyboard).
+      const focusTi = firstTileOfPart.get(pi);
+      if (active && focusTi != null) {
+        if (pi === activePart) group.classList.add('active-word');
+        group.classList.add('tappable');
+        group.addEventListener('click', () => onCellClick(focusTi));
+      }
       const len = p.text.length;
       for (let ci = 0; ci < len; ci++) {
         if (ci > 0 && !isLetter(p.text[ci])) {
@@ -125,7 +136,8 @@ export function renderGrid(puzzle, guesses, cells, cursor, activeRow, flipRow, o
           if (ti != null) {
             if (cells[ti]) tile.textContent = cells[ti];
             if (ti === cursor) tile.classList.add('cursor');
-            tile.addEventListener('click', () => onCellClick(ti));
+            // Tap a specific tile to put the cursor there (overrides the group).
+            tile.addEventListener('click', (e) => { e.stopPropagation(); onCellClick(ti); });
           }
         }
         if (animate) { tile.classList.add('flip'); tile.style.animationDelay = `${cellIdx * 0.11}s`; }
